@@ -3,7 +3,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const { connectToMongoDB } = require("./connection");
 const { restrictToLoggedinUserOnly, checkAuth } = require("./middlewares/auth");
-
+require("dotenv").config();
 
 const URL = require("./models/url");
 
