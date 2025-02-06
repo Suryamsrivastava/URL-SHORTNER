@@ -30,7 +30,6 @@ async function handleUserLogin(req, res) {
   return res.redirect("/");
 }
 
-// Delete section
 async function handleUrlDelete(req, res) {
   try {
      
@@ -41,7 +40,6 @@ async function handleUrlDelete(req, res) {
   }
 };
 
-// Profile
 async function handleProfile(req, res) {
   const userUid = req.cookies?.uid;
   const user = getUser(userUid);
@@ -77,10 +75,9 @@ async function handlePasswordUpdate(req, res) {
     });
   }
 
-  // Update the password
   await User.findByIdAndUpdate(user._id, { password: newPassword });
 
-  res.redirect("/url/profile"); // Redirect to profile page after successful password change
+  res.redirect("/url/profile");
 }
 
 async function handleDeleteAccount(req, res) {
@@ -91,10 +88,9 @@ async function handleDeleteAccount(req, res) {
     return res.redirect("/login");
   }
 
-  // Delete the user from the database
+  await Url.deleteMany({ createdBy: user._id });
   await User.findByIdAndDelete(user._id);
 
-  // Clear the user cookie and redirect to the login page
   res.clearCookie("uid");
   res.redirect("/login");
 }
