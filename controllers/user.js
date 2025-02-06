@@ -11,7 +11,7 @@ async function handleUserSignup(req, res){
         email,
         password,
     });
-    return res.redirect("/");  
+    return res.render("login");  
 }
 
 async function handleUserLogin(req, res) {

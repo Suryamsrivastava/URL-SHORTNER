@@ -1,67 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
     <style>
-        body{
-            color: #2A3D45;
-            background-color: #B1F0F7;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      body {
+        color: #e0e0e0;
+        background-color: #121212;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        flex-direction: column;
+      }
+      .container {
+        width: 90%;
+        max-width: 700px;
+        background: #1e1e1e;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        text-align: center;
+      }
+      .top-buttons {
+        width: 90%;
+        max-width: 700px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .top-buttons button {
+        padding: 10px 20px;
+        background-color: #d32f2f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .top-buttons{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .top-buttons button:hover {
+        background-color: #b71c1c;
+      }
+      h1 {
+        font-family: "Playfair Display", serif;
+        margin-bottom: 20px;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        border: 1px solid #444;
+        background: #252525;
+        color: #e0e0e0;
+        border-radius: 5px;
+        font-size: 18px;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        background-color: #007acc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #005f99;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        background: #252525;
+      }
+      th,
+      td {
+        border: 1px solid #444;
+        padding: 10px;
+        text-align: center;
+        color: #e0e0e0;
+      }
+      th {
+        background-color: #333;
+      }
+      a {
+        color: #4db6ac;
+      }
+      @media (max-width: 600px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+          width: 100%;
         }
-        .content{
-            font-family: 'Playfair Display', serif;
-            font-size: large;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        th {
+          display: none;
         }
+        td {
+          text-align: right;
+          padding-left: 50%;
+          position: relative;
+        }
+        td::before {
+          content: attr(data-label);
+          position: absolute;
+          left: 10px;
+          font-weight: bold;
+          text-align: left;
+        }
+      }
+      .logout-btn {
+        width: auto;
+        padding: 10px 20px;
+        margin-top: 20px;
+        background-color: #d32f2f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .logout-btn:hover {
+        background-color: #b71c1c;
+      }
     </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div class="content">
-    <h1>URL SHORTNER</h1>
-    </div> 
-    <br><br>
-    <div class="content">
-    <% if (locals.id) { %>
-     <p>URL Generated: http://localhost:8001/<%= id %></p>
-    <% } %>
-    <div>
-        <form method="POST" action="/url">
-            <label for="">Enter Your Original URL</label>
-            <input type="text"
-             name="url" 
-             placeholder="https://www.example.com"
-             />
-             <button type="submit">Generate</button>
-        </form>
+  </head>
+  <body>
+    <div class="container">
+      <h1>URL Shortener</h1>
+      <% if (locals.id) { %>
+      <p>
+        <strong>URL Generated:</strong>
+        <a href="http://localhost:8001/<%= id %>" target="_blank"
+          >http://localhost:8001/<%= id %></a
+        >
+      </p>
+      
+      <% } %>
+      <form method="POST" action="/url">
+        <label for="url">Enter Your Original URL</label>
+        <input
+          type="text"
+          name="url"
+          placeholder="https://www.example.com"
+          required
+        />
+        <button type="submit">Generate</button>
+      </form>
+      <% if (locals.urls) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>S.NO.</th>
+            <th>ShortID</th>
+            <th>Redirect</th>
+            <th>Clicks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% urls.forEach((url, index) => { %>
+          <tr>
+            <td data-label="S.NO."><%= index + 1 %></td>
+            <td data-label="ShortID">
+              <a href="<%= url.shortId %>" target="_blank"
+                ><%= url.shortId %></a
+              >
+            </td>
+            <td data-label="Redirect">
+              <%= url.redirectUrl %>
+            </td>
+            <td data-label="Clicks"><%= url.visitHistory.length %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+      <button onclick="window.history.back()" class="logout-btn">Back</button>
+      <a href="/logout"><button class="logout-btn">Logout</button></a>
     </div>
-  </div>
-  <br><br><br><br>
-    <div class="content">
-        <% if (locals.urls) { %>
-             <table>
-                <thead>
-                    <th>S.NO.</th>
-                    <th>ShortID</th>
-                    <th>Redirect</th>
-                    <th>clicks</th>
-                </thead>
-                <tbody>
-                    <% urls.forEach((url, index) => { %>
-                      <tr> 
-                       <td><%= index + 1 %></td>
-                       <td><%= url.shortId %></td>
-                       <td><%= url.redirectUrl %></td>
-                       <td><%= url.visitHistory.length %></td>
-                      </tr>
-                    <% }) %>
-                </tbody>
-             </table>
-        <% } %>
-    </div>
-    
-</body>
+  </body>
 </html>
