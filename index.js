@@ -26,7 +26,7 @@ app.set("views", path.resolve("./views"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-
+app.use(checkAuth);
 
 
 app.use("/url", restrictToLoggedinUserOnly, urlRoute);
@@ -55,7 +55,7 @@ app.get("/:shortId", async (req, res) => {
     }
     res.redirect(entry.redirectUrl);
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error:", error.message);
     res.status(500).send("Internal Server Error");
   }
 });
