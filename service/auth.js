@@ -1,34 +1,24 @@
 const jwt = require("jsonwebtoken");
-const secret = "Raman@123@123";
-
-// function setUser(id, user){
-//     const payload = {
-//         id,
-//         ...user,
-//     }
-//     return jwt.sign(payload, secret);
-// }
+require("dotenv").config();
 
 function setUser(user) {
   return jwt.sign(
     {
       _id: user._id,
+      name: user.name, 
       email: user.email,
     },
-    secret
+    process.env.secret
   );
 }
-
-
-// function getUser(id){
-//     return sessionIdToUserMap.get(id);
-// }
 
 function getUser(token) {
   if (!token) return null;
   try {
-    return jwt.verify(token, secret);
+    const decoded = jwt.verify(token, process.env.secret);
+    return decoded;
   } catch (error) {
+    console.error("JWT Error:", error.message);
     return null;
   }
 }
